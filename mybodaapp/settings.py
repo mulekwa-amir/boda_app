@@ -125,6 +125,21 @@ STATICFILES_DIRS = [
 ]
 
 
+# WhiteNoise configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Add WhiteNoise to the middleware, right after SecurityMiddleware
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
@@ -139,3 +154,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Where to send people who need to sign in / after signing out
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
+
+
+# Check if we are in production (Render sets the RENDER environment variable automatically)
+if 'RENDER' in os.environ:
+    DEBUG = False
+    # Render gives us the external hostname automatically
+    ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
+else:
+    # Local development settings
+    DEBUG = True
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
