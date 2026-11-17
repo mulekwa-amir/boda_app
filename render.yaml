@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: bodaapp
+    runtime: python
+    plan: free
+    buildCommand: "bash ./build.sh"
+    startCommand: "gunicorn mybodaapp.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.1"
+      - key: DJANGO_SETTINGS_MODULE
+        value: mybodaapp.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: "4"
