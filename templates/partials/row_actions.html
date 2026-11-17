@@ -1,0 +1,9 @@
+{# params: edit_url, delete_url, pk, label, noun #}
+<td class="text-end pe-3 text-nowrap">
+  <a href="{% url edit_url pk %}" class="text-secondary font-weight-bold text-xs me-2">Edit</a>
+  <form method="post" action="{% url delete_url pk %}" class="d-inline"
+        onsubmit="return confirm('Delete {{ noun|escapejs }} “{{ label|escapejs }}”? This cannot be undone.');">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-link text-danger font-weight-bold text-xs p-0 mb-0">Delete</button>
+  </form>
+</td>

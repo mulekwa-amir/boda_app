@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partials/page_header.html' with title="Account not set up" %}
+<div class="container-fluid py-3">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="mb-2">Your login isn't linked to a customer or rider yet</h5>
+      <p class="text-sm mb-0">
+        You're signed in as <strong>{{ user.get_username }}</strong>, but this account has no customer or rider record attached,
+        so there's nothing to show. Ask an administrator to link your account, or sign out and
+        <a href="{% url 'signup' %}">sign up</a> as a customer or rider.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

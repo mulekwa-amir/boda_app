@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partials/page_header.html' with title="Riders" lede="Licensed motorcycle riders. Contact and licence number must be unique." %}
+
+<div class="container-fluid py-3">
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+          <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-2 d-flex justify-content-between pe-3">
+            <h6 class="text-white text-capitalize ps-3">All riders</h6>
+            <div class="d-flex align-items-center gap-3"><span class="text-white text-xs opacity-8 mt-1">{{ riders|length }} record{{ riders|length|pluralize }}</span><button type="button" class="btn btn-sm btn-light mb-0" data-bs-toggle="modal" data-bs-target="#recordModal"><i class="material-symbols-rounded align-middle" style="font-size:18px">add</i> Add rider</button></div>
+          </div>
+        </div>
+        <div class="card-body px-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Licence</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Experience</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Age</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Gender</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Location</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-end pe-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in riders %}
+                <tr{% if editing and editing.pk == r.pk %} class="table-active"{% endif %}>
+                  <td class="text-sm">{{ r.pk }}</td>
+                  <td class="text-sm">{{ r }}</td>
+                  <td class="text-sm">{{ r.contact }}</td>
+                  <td class="text-sm">{{ r.license }}</td>
+                  <td class="text-sm">{{ r.experience_years }} yrs</td>
+                  <td class="text-sm">{{ r.age }}</td>
+                  <td class="text-sm">{{ r.gender }}</td>
+                  <td class="text-sm">{{ r.home_location }}</td>
+                  {% include 'partials/row_actions.html' with edit_url="rider_edit" delete_url="rider_delete" pk=r.pk label=r noun="rider" %}
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-secondary py-4 text-sm">No riders yet — click “Add rider” to create the first one.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}{% include 'partials/form_modal.html' with noun="rider" cancel_url="rider" %}{% endblock %}

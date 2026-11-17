@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partials/page_header.html' with title="Rate a Rider" lede="Leave feedback for the rider on a completed trip. You can rate each trip once." %}
+
+<div class="container-fluid py-3">
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+          <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-2 d-flex justify-content-between pe-3"><h6 class="text-white text-capitalize ps-3">Ratings I have given</h6><button type="button" class="btn btn-sm btn-light mb-0" data-bs-toggle="modal" data-bs-target="#recordModal"><i class="material-symbols-rounded align-middle" style="font-size:18px">add</i> Rate a rider</button></div>
+        </div>
+        <div class="card-body px-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead><tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Trip</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rider</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Score</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Comment</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+              </tr></thead>
+              <tbody>
+                {% for r in ratings %}
+                <tr>
+                  <td class="text-sm">#{{ r.trip_id }}</td>
+                  <td class="text-sm">{{ r.rider }}</td>
+                  <td class="text-sm">{% include 'partials/stars.html' with score=r.score %}</td>
+                  <td class="text-sm">{{ r.comment|default:"—" }}</td>
+                  <td class="text-sm">{{ r.date|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-secondary py-4 text-sm">You haven't rated any riders yet.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}{% include 'partials/form_modal.html' with noun="rating" cancel_url="cust_rate_rider" card_title="Rate a rider" submit_label="Submit rating" %}{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partials/page_header.html' with title="My Earnings" lede="What you have earned from your trips." %}
+
+<div class="container-fluid py-3">
+  <div class="row">
+    {% include 'partials/stat_card.html' with label="Earned (completed trips)" value=earned|floatformat:"0g" note="UGX" %}
+    {% include 'partials/stat_card.html' with label="Still to come" value=pending|floatformat:"0g" note="UGX · pending + ongoing trips" %}
+  </div>
+
+  <div class="card">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+      <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-2"><h6 class="text-white text-capitalize ps-3">Trip fares</h6></div>
+    </div>
+    <div class="card-body px-0 pb-2">
+      <div class="table-responsive p-0">
+        <table class="table align-items-center mb-0">
+          <thead><tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Trip</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Route</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Distance</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-end pe-4">Fare (UGX)</th>
+          </tr></thead>
+          <tbody>
+            {% for t in trips %}
+            <tr>
+              <td class="text-sm">#{{ t.pk }}</td>
+              <td class="text-sm">{{ t.start_time|date:"Y-m-d H:i" }}</td>
+              <td class="text-sm">{{ t.customer }}</td>
+              <td class="text-sm">{{ t.pickup_location }} → {{ t.dropoff_location }}</td>
+              <td class="text-sm">{{ t.distance_km|floatformat:1 }} km</td>
+              <td class="text-sm">{% include 'partials/status_badge.html' with status=t.status %}</td>
+              <td class="text-sm text-end pe-4">{{ t.fare|floatformat:"0g" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-secondary py-4 text-sm">No trips yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

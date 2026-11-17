@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partials/page_header.html' with title="Ratings About Me" lede="What riders have said about you after your trips." %}
+
+<div class="container-fluid py-3">
+  <div class="row">
+    {% include 'partials/stat_card.html' with label="Average rating" value=avg_rating note="out of 5" %}
+    {% include 'partials/stat_card.html' with label="Ratings received" value=ratings|length %}
+  </div>
+
+  <div class="card">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+      <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-2"><h6 class="text-white text-capitalize ps-3">From riders</h6></div>
+    </div>
+    <div class="card-body px-0 pb-2">
+      <div class="table-responsive p-0">
+        <table class="table align-items-center mb-0">
+          <thead><tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Trip</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rated by</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Score</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Comment</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+          </tr></thead>
+          <tbody>
+            {% for r in ratings %}
+            <tr>
+              <td class="text-sm">#{{ r.trip_id }}</td>
+              <td class="text-sm">{{ r.rated_by }}</td>
+              <td class="text-sm">{% include 'partials/stars.html' with score=r.score %}</td>
+              <td class="text-sm">{{ r.comment|default:"—" }}</td>
+              <td class="text-sm">{{ r.date|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-secondary py-4 text-sm">No riders have rated you yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

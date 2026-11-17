@@ -1,0 +1,12 @@
+<li class="nav-item mt-3">
+  <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">{{ user.get_username }}{% if role_label %} · {{ role_label }}{% endif %}</h6>
+</li>
+<li class="nav-item">
+  <form method="post" action="{% url 'logout' %}" class="m-0">
+    {% csrf_token %}
+    <button type="submit" class="nav-link text-dark border-0 bg-transparent w-100 text-start">
+      <i class="material-symbols-rounded opacity-5">logout</i>
+      <span class="nav-link-text ms-1">Sign Out</span>
+    </button>
+  </form>
+</li>

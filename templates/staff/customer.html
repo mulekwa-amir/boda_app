@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partials/page_header.html' with title="Customers" lede="People who book trips. Contact and email must be unique per customer." %}
+
+<div class="container-fluid py-3">
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+          <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-2 d-flex justify-content-between pe-3">
+            <h6 class="text-white text-capitalize ps-3">All customers</h6>
+            <div class="d-flex align-items-center gap-3"><span class="text-white text-xs opacity-8 mt-1">{{ customers|length }} record{{ customers|length|pluralize }}</span><button type="button" class="btn btn-sm btn-light mb-0" data-bs-toggle="modal" data-bs-target="#recordModal"><i class="material-symbols-rounded align-middle" style="font-size:18px">add</i> Add customer</button></div>
+          </div>
+        </div>
+        <div class="card-body px-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">First name</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Last name</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Location</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-end pe-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in customers %}
+                <tr{% if editing and editing.pk == c.pk %} class="table-active"{% endif %}>
+                  <td class="text-sm">{{ c.pk }}</td>
+                  <td class="text-sm">{{ c.first_name }}</td>
+                  <td class="text-sm">{{ c.last_name }}</td>
+                  <td class="text-sm">{{ c.contact }}</td>
+                  <td class="text-sm">{{ c.email }}</td>
+                  <td class="text-sm">{{ c.home_location }}</td>
+                  {% include 'partials/row_actions.html' with edit_url="customer_edit" delete_url="customer_delete" pk=c.pk label=c noun="customer" %}
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center text-secondary py-4 text-sm">No customers yet — click “Add customer” to create the first one.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}{% include 'partials/form_modal.html' with noun="customer" cancel_url="customer" %}{% endblock %}

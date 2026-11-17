@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partials/page_header.html' with title="My Trips" lede="Start a trip when you pick the customer up, and complete it when you drop them off." %}
+
+<div class="container-fluid py-3">
+  <div class="card">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+      <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-2 d-flex justify-content-between pe-3">
+        <h6 class="text-white text-capitalize ps-3">Trips booked with me</h6>
+        <span class="text-white text-xs opacity-8 mt-1">{{ trips|length }} trip{{ trips|length|pluralize }}</span>
+      </div>
+    </div>
+    <div class="card-body px-0 pb-2">
+      <div class="table-responsive p-0">
+        <table class="table align-items-center mb-0">
+          <thead><tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Trip</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Boda</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Route</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Booked</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ended</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Fare (UGX)</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-end pe-4">Action</th>
+          </tr></thead>
+          <tbody>
+            {% for t in trips %}
+            <tr>
+              <td class="text-sm">#{{ t.pk }}</td>
+              <td class="text-sm">{{ t.customer }}</td>
+              <td class="text-sm">{{ t.boda.plate_number }}</td>
+              <td class="text-sm">{{ t.pickup_location }} → {{ t.dropoff_location }}</td>
+              <td class="text-sm">{{ t.start_time|date:"Y-m-d H:i" }}</td>
+              <td class="text-sm">{{ t.end_time|date:"Y-m-d H:i"|default:"—" }}</td>
+              <td class="text-sm">{% include 'partials/status_badge.html' with status=t.status %}</td>
+              <td class="text-sm">{{ t.fare|floatformat:"0g" }}</td>
+              <td class="text-end pe-3 text-nowrap">
+                {% if t.status == 'pending' %}
+                <form method="post" action="{% url 'rid_trip_action' t.pk 'start' %}" class="d-inline">{% csrf_token %}
+                  <button type="submit" class="btn btn-sm bg-gradient-info mb-0 py-1 px-2">Start</button></form>
+                {% elif t.status == 'ongoing' %}
+                <form method="post" action="{% url 'rid_trip_action' t.pk 'complete' %}" class="d-inline">{% csrf_token %}
+                  <button type="submit" class="btn btn-sm bg-gradient-success mb-0 py-1 px-2">Complete</button></form>
+                {% elif t.status == 'completed' %}
+                <a href="{% url 'rid_rate_customer' %}" class="text-secondary font-weight-bold text-xs">Rate customer</a>
+                {% endif %}
+                {% if t.status == 'pending' or t.status == 'ongoing' %}
+                <form method="post" action="{% url 'rid_trip_action' t.pk 'cancel' %}" class="d-inline ms-1"
+                      onsubmit="return confirm('Cancel trip #{{ t.pk }}?');">{% csrf_token %}
+                  <button type="submit" class="btn btn-link text-danger font-weight-bold text-xs p-0 mb-0">Cancel</button></form>
+                {% elif t.status == 'cancelled' %}<span class="text-xs text-secondary">—</span>{% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9" class="text-center text-secondary py-4 text-sm">No one has booked you yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
